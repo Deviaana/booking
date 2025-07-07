@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知中心 - 服务商控制台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/provider-dashboard.css">
+    <style>
+        /* 通知页面样式 */
+        .notifications-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .notifications-header h1 {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-mark-all-read {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-mark-all-read:hover {
+            background: #e8e8e8;
+            color: #4a6cf7;
+        }
+        
+        /* 通知类别筛选 */
+        .notifications-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        
+        .notification-tab {
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .notification-tab:hover {
+            color: #4a6cf7;
+        }
+        
+        .notification-tab.active {
+            color: #4a6cf7;
+            border-bottom-color: #4a6cf7;
+            font-weight: 500;
+        }
+        
+        .notification-tab .badge {
+            display: inline-block;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 6px;
+            line-height: 18px;
+            text-align: center;
+            background: #f5f5f5;
+            color: #666;
+            border-radius: 9px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        .notification-tab.active .badge {
+            background: #4a6cf7;
+            color: #fff;
+        }
+        
+        /* 通知列表 */
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .notification-item {
+            display: flex;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .notification-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .notification-item.unread {
+            background: rgba(74, 108, 247, 0.05);
+        }
+        
+        .notification-item.unread:hover {
+            background: rgba(74, 108, 247, 0.08);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            margin-right: 15px;
+            border-radius: 50%;
+            background: #f5f8ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notification-icon i {
+            font-size: 18px;
+            color: #4a6cf7;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-content h3 {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 5px 0;
+            font-weight: 500;
+        }
+        
+        .notification-content p {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 8px 0;
+            line-height: 1.5;
+        }
+        
+        .notification-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .notification-action-btn {
+            background: none;
+            border: none;
+            font-size: 13px;
+            color: #4a6cf7;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.2s ease;
+        }
+        
+        .notification-action-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .notification-unread-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4a6cf7;
+        }
+        
+        /* 通知类型标签 */
+        .notification-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+        
+        .notification-tag.system {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .notification-tag.booking {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+        
+        .notification-tag.review {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .notification-tag.promotion {
+            background: #fff2e8;
+            color: #fa8c16;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 0;
+            text-align: center;
+            color: #999;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #eee;
+        }
+        
+        .empty-state p {
+            font-size: 16px;
+            margin: 0;
+        }
+        
+        /* 加载更多按钮 */
+        .load-more {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .load-more-btn {
+            background: #f5f5f5;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .load-more-btn:hover {
+            background: #e8e8e8;
+            color: #4a6cf7;
+        }
+        
+        .load-more-btn i {
+            font-size: 12px;
+        }
+        
+        .loading .load-more-btn i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 主体布局 -->
+    <div class="dashboard-layout">
+        <!-- 顶部导航栏 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html" class="nav-logo" style="text-decoration: none; color: black;">
+                    <img src="img/logo.svg" alt="预约平台">
+                </a>
+            </div>
+            <div class="nav-right">
+                <a href="service-management.html" class="nav-btn publish-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>发布服务</span>
+                </a>
+                <a href="provider-notifications.html" class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">5</span>
+                </a>
+                <div class="user-menu">
+                    <img src="img/avatar.jpg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">李服务</span>
+
+                </div>
+            </div>
+        </nav>
+
+        <!-- 侧边栏 -->
+        <aside class="dashboard-sidebar">
+            <div class="user-profile">
+                <div class="profile-header">
+                    <div class="profile-avatar-wrapper">
+                        <img src="img/avatar.jpg" alt="用户头像" class="profile-avatar">
+                    </div>
+                    <h3 class="profile-name">李服务</h3>
+                    <p class="profile-role">服务商</p>
+                </div>
+                <div class="booking-stats">
+                    <div class="stat-card waiting" data-status="pending">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">待确认预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card upcoming" data-status="upcoming">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">即将到来</span>
+                        </div>
+                    </div>
+                    <div class="stat-card completed" data-status="completed">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已完成预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card cancelled" data-status="canceled">
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已拒绝预约</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="dashboard-nav">
+                <a href="provider-dashboard.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>预约管理</span>
+                </a>
+                <a href="service-management.html" class="nav-item">
+                    <i class="fas fa-list-alt"></i>
+                    <span>服务管理</span>
+                    
+                </a>
+                <a href="time-slot-management.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>时间段管理</span>
+                </a>
+                <a href="provider-reviews.html" class="nav-item">
+                    <i class="fas fa-star"></i>
+                    <span>客户评价</span>
+                    
+                </a>
+                <a href="provider-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>账号设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主要内容区 -->
+        <main class="dashboard-main">
+            <div class="notifications-container">
+                <!-- 通知头部 -->
+                <div class="notifications-header">
+                    <h1>通知中心</h1>
+                    <div class="header-actions">
+                        <button class="btn-mark-all-read">
+                            <i class="fas fa-check-double"></i>
+                            <span>全部标记为已读</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 通知分类选项卡 -->
+                <div class="notifications-tabs">
+                    <div class="notification-tab active" data-type="all">
+                        全部 <span class="badge">5</span>
+                    </div>
+                    <div class="notification-tab" data-type="unread">
+                        未读 <span class="badge">3</span>
+                    </div>
+                    <div class="notification-tab" data-type="booking">
+                        预约 <span class="badge">3</span>
+                    </div>
+                    <div class="notification-tab" data-type="review">
+                        评价 <span class="badge">1</span>
+                    </div>
+                    <div class="notification-tab" data-type="system">
+                        系统 <span class="badge">1</span>
+                    </div>
+                </div>
+                
+                <!-- 通知列表 -->
+                <div class="notifications-list">
+                    <!-- 未读通知 - 新预约 -->
+                    <div class="notification-item unread" data-type="booking">
+                        <div class="notification-unread-indicator"></div>
+                        <div class="notification-icon">
+                            <i class="fas fa-calendar-plus"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h3>新预约请求</h3>
+                            <p>您收到了来自王小明的「全身按摩护理」服务预约请求，预约时间为2025年6月17日 10:00。</p>
+                            <div class="notification-meta">
+                                <span class="notification-time">10分钟前</span>
+                                <div class="notification-actions">
+                                    <button class="notification-action-btn">立即处理</button>
+                                    <button class="notification-action-btn mark-read">标记为已读</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 未读通知 - 新评价 -->
+                    <div class="notification-item unread" data-type="review">
+                        <div class="notification-unread-indicator"></div>
+                        <div class="notification-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h3>新的服务评价</h3>
+                            <p>您的「足部按摩」服务收到了一条新的五星好评，客户陈小静对您的服务表示非常满意。</p>
+                            <div class="notification-meta">
+                                <span class="notification-time">2小时前</span>
+                                <div class="notification-actions">
+                                    <button class="notification-action-btn">查看评价</button>
+                                    <button class="notification-action-btn mark-read">标记为已读</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 未读通知 - 系统通知 -->
+                    <div class="notification-item unread" data-type="system">
+                        <div class="notification-unread-indicator"></div>
+                        <div class="notification-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h3>系统通知</h3>
+                            <p>平台将于2025年6月20日进行系统维护升级，届时服务可能会有短暂中断，请提前做好安排。</p>
+                            <div class="notification-meta">
+                                <span class="notification-time">1天前</span>
+                                <div class="notification-actions">
+                                    <button class="notification-action-btn mark-read">标记为已读</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 已读通知 - 预约确认 -->
+                    <div class="notification-item" data-type="booking">
+                        <div class="notification-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h3>预约已确认</h3>
+                            <p>您已成功确认张小伟的「颈椎调理按摩」服务预约，预约时间为2025年6月18日 09:30。</p>
+                            <div class="notification-meta">
+                                <span class="notification-time">2天前</span>
+                                <div class="notification-actions">
+                                    <button class="notification-action-btn">查看详情</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 已读通知 - 预约完成 -->
+                    <div class="notification-item" data-type="booking">
+                        <div class="notification-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h3>预约已完成</h3>
+                            <p>您与陈小静的「足部按摩」服务预约已标记为完成，请记得查看客户的评价。</p>
+                            <div class="notification-meta">
+                                <span class="notification-time">3天前</span>
+                                <div class="notification-actions">
+                                    <button class="notification-action-btn">查看详情</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 加载更多按钮 -->
+                <div class="load-more">
+                    <button class="load-more-btn">
+                        <span>加载更多</span>
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 标签切换功能
+            const tabs = document.querySelectorAll('.notification-tab');
+            const notifications = document.querySelectorAll('.notification-item');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // 更新激活的标签
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // 筛选通知
+                    const type = tab.dataset.type;
+                    notifications.forEach(notification => {
+                        if (type === 'all' || 
+                            (type === 'unread' && notification.classList.contains('unread')) ||
+                            (type === notification.dataset.type)) {
+                            notification.style.display = 'flex';
+                        } else {
+                            notification.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // 标记为已读功能
+            const markReadButtons = document.querySelectorAll('.mark-read');
+            markReadButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const notification = this.closest('.notification-item');
+                    notification.classList.remove('unread');
+                    const indicator = notification.querySelector('.notification-unread-indicator');
+                    if (indicator) {
+                        indicator.remove();
+                    }
+                    this.remove();
+                    
+                    // 更新未读数量
+                    updateUnreadCount();
+                });
+            });
+            
+            // 全部标记为已读
+            const markAllReadButton = document.querySelector('.btn-mark-all-read');
+            markAllReadButton.addEventListener('click', () => {
+                const unreadNotifications = document.querySelectorAll('.notification-item.unread');
+                unreadNotifications.forEach(notification => {
+                    notification.classList.remove('unread');
+                    const indicator = notification.querySelector('.notification-unread-indicator');
+                    if (indicator) {
+                        indicator.remove();
+                    }
+                    const markReadButton = notification.querySelector('.mark-read');
+                    if (markReadButton) {
+                        markReadButton.remove();
+                    }
+                });
+                
+                // 更新未读数量
+                updateUnreadCount();
+            });
+            
+            // 更新未读数量
+            function updateUnreadCount() {
+                const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+                const unreadBadge = document.querySelector('.notification-tab[data-type="unread"] .badge');
+                if (unreadBadge) {
+                    unreadBadge.textContent = unreadCount;
+                }
+                
+                const topNavBadge = document.querySelector('.notification-btn .badge');
+                if (topNavBadge) {
+                    topNavBadge.textContent = unreadCount;
+                }
+                
+                if (unreadCount === 0) {
+                    topNavBadge.style.display = 'none';
+                } else {
+                    topNavBadge.style.display = 'inline-block';
+                }
+            }
+            
+            // 加载更多功能
+            const loadMoreButton = document.querySelector('.load-more-btn');
+            loadMoreButton.addEventListener('click', function() {
+                this.classList.add('loading');
+                
+                // 模拟加载
+                setTimeout(() => {
+                    this.classList.remove('loading');
+                    
+                    // 这里可以添加加载更多通知的逻辑
+                    // 模拟没有更多通知
+                    this.textContent = '没有更多通知';
+                    this.disabled = true;
+                }, 1000);
+            });
+        });
+    </script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar-manager.js"></script>
+    <script src="js/notification-manager.js"></script>
+</body>
+</html> 

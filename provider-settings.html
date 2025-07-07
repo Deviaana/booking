@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<main lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>账号设置 - 服务商控制台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/provider-dashboard.css">
+    <link rel="stylesheet" href="css/account-settings.css">
+    <style>
+            * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+          background-color: #ECECF0;
+          padding:0;
+          color: #333;
+        }
+
+        h2 {
+          text-align: center;
+          color: #333340;
+          margin-bottom: 40px;
+          font-size: 24px;
+        }
+
+        /* 卡片网格布局 */
+        .card:hover {
+            transform: translateY(-4px);
+        }
+        .card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #555566;
+            border-bottom: 1px solid #EAEAEA;
+            padding-bottom: 8px;
+        }
+        .card-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 32px;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        /* 卡片基础样式 */
+        .card {
+          background-color: #FFFFFF;
+          border-radius: 16px;
+          padding: 24px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .card label {
+          display: block;
+          margin-bottom: 8px;
+          color: #555566;
+          font-weight: 500;
+        }
+
+        /* 输入框、选择框、文本域通用样式 */
+        .card input[type="text"],
+        .card input[type="tel"],
+        .card input[type="email"],
+        .card select,
+        .card textarea {
+          width: 100%;
+          padding: 8px 12px;
+          border: 1px solid #DCDCE6;
+          border-radius: 8px;
+          font-size: 14px;
+          color: #333340;
+          margin-bottom: 16px;
+          outline: none;
+          transition: border-color 0.3s ease;
+        }
+
+        .card input[type="text"]:focus,
+        .card input[type="tel"]:focus,
+        .card input[type="email"]:focus,
+        .card select:focus,
+        .card textarea:focus {
+          border-color: #6A5AF9;
+        }
+
+        /* 头像上传区域（这里仅做样式模拟，实际功能需结合 JS 实现） */
+        .avatar-upload {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          overflow: hidden;
+          margin-bottom: 16px;
+          position: relative;
+          border: 2px dashed #DCDCE6;
+          cursor: pointer;
+        }
+
+        .avatar-upload img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .avatar-upload input[type="file"] {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          cursor: pointer;
+        }
+
+        /* 个人简介文本域高度自适应（可选 JS 实现更好的交互） */
+        .card textarea {
+          resize: none;
+          min-height: 80px;
+        }
+
+        /* 按钮组样式 */
+        .btn:hover {
+          opacity: 0.9;
+        }
+         /* 营业时间样式 */
+        .business-hours {
+            display: flex;
+            align-items: center;
+        }
+
+        .time-group {
+          display: flex;
+          align-items: center;
+          gap: 18px;
+          margin: 18px 0 18px 0;
+          justify-content: flex-start;
+        }
+        .time-group label,
+        .time-group .time-select,
+        .time-group span {
+          margin: 0;
+        }
+        .time-group .time-select {
+          margin: 0 0.5rem;
+        }
+        .time-group span {
+          font-size: 1.1em;
+          color: #666;
+          font-weight: 500;
+        }
+
+        .time-inputs {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .time-input {
+            width: 50px;
+            height: 32px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px;
+            font-size: 14px;
+        }
+        .time-group {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        .time-group input {
+          width: 60px; /* 减小输入框宽度 */
+        }
+
+        .time-group span {
+            padding: 0 4px;
+        }
+
+        .colon {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* 时间选择下拉菜单样式 */
+        .time-select {
+          width: 120px;
+          min-width: 110px;
+          height: 40px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 4px 16px;
+          font-size: 18px;
+          background-color: #fff;
+          cursor: pointer;
+          outline: none;
+          box-sizing: border-box;
+          transition: border-color 0.3s ease;
+        }
+
+        .time-select:focus {
+          border-color: #6A5AF9;
+        }
+
+        .time-select option {
+          font-size: 18px;
+          padding: 6px 12px;
+        }
+
+        @media (max-width: 768px) {
+          .time-select {
+            width: 100px;
+            min-width: 90px;
+            font-size: 16px;
+          }
+        }
+        /* 地址输入框样式 */
+        .address-group {
+          display: flex;
+          gap: 12px;
+          margin-bottom: 16px;
+        }
+        .address-group input {
+            flex: 1;
+        }
+        .address-input {
+            display: flex;
+            gap: 10px; /* 输入框之间的间距 */
+            align-items: center;
+            width: 100%;
+        }
+
+        .address-item {
+            flex: 1; /* 三个输入框平均分配宽度 */
+            display: flex;
+            align-items: center;
+        }
+
+        .address-label {
+            color: #333;
+            font-weight: 500;
+            margin-right: 5px;
+            white-space: nowrap; /* 防止标签换行 */
+        }
+
+        .address-input input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* 全局美化样式 */
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #f5f7ff;
+            --border-radius: 8px;
+            --border-color: #e0e6ed;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 基础元素美化 */
+        button, input, select, textarea {
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        button:hover, .btn-modify:hover, .btn-enable:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 选项卡美化 */
+        .settings-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .tab-btn.active::after {
+            width: 100%;
+        }
+
+        /* 设置面板美化 */
+        .settings-panel {
+            background-color: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        /* 表单元素美化 */
+                .form-item {
+          margin-bottom: 16px;
+        }
+
+        .form-item label {
+          display: block;
+          font-size: 14px;
+          color: #666677;
+          margin-bottom: 6px;
+        }
+
+        .form-item input,
+        .form-item select,
+        .form-item textarea {
+          width: 100%;
+          padding: 10px 12px;
+          border: 1px solid #DCDCE6;
+          border-radius: 8px;
+          font-size: 14px;
+          color: #333340;
+          outline: none;
+          transition: border-color 0.3s ease;
+        }
+
+        .form-item input:focus,
+        .form-item select:focus,
+        .form-item textarea:focus {
+          border-color: #6A5AF9;
+        }
+
+        .form-item textarea {
+          resize: none; /* 禁止用户调整文本框大小 */
+          height: 120px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+            outline: none;
+        }
+            .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: #4a6cf7;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        /* 按钮美化 */
+        .btn-save {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+
+        .btn-cancel {
+            background-color: white;
+            color: #666;
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+        }
+
+        /* 头像上传美化 */
+        .avatar-upload {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 24px;
+        }
+
+        .avatar-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--primary-color), var(--shadow);
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        .avatar-upload:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        /* 支付方式美化 */
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .payment-item:hover {
+            border-color: var(--primary-color);
+        }
+
+        .btn-add-payment {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed var(--border-color);
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-add-payment:hover {
+            border-color: var(--primary-color);
+        }
+
+        /* 模态框美化 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h4 {
+            margin: 0;
+        }
+
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .close {
+            cursor: pointer;
+            font-size: 20px;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+
+            /* 表单样式 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+         /* 固定商家简介文本框大小 */
+        #business .form-group textarea {
+            resize: none; /* 禁止拉伸 */
+            min-height: 120px; /* 固定高度 */
+            max-height: 120px;
+        }
+
+        /* 开关美化 */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-label {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-label:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .toggle-input:checked + .toggle-label {
+            background-color: var(--primary-color);
+        }
+
+        .toggle-input:focus + .toggle-label {
+            box-shadow: 0 0 1px var(--primary-color);
+        }
+
+        .toggle-input:checked + .toggle-label:before {
+            transform: translateX(24px);
+        }
+    </style>
+    <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .password-strength-bar {
+        transition: width 0.3s ease;
+      }
+      .border-primary {
+        border: 1px solid #4a6cf7;
+      }
+      .ring-primary {
+        box-shadow: 0 0 0 1px #4a6cf7;
+      }
+      .input-focus {
+        @apply border-primary ring-1 ring-primary;
+      }
+      .btn-hover {
+        @apply transform -translate-y-0.5 shadow-md;
+      }
+      .form-container {
+        @apply w-full bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl;
+      }
+      .section-header {
+        @apply text-[clamp(1.5rem,3vw,1.75rem)] font-bold text-center mb-6;
+      }
+      .form-group {
+        @apply mb-5;
+      }
+      .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-2;
+      }
+      .form-input {
+        @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:input-focus transition-all duration-200;
+      }
+      .btn {
+        @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none;
+      }
+    }
+  </style>
+</head>
+
+    <!-- 主体布局 -->
+    <div class="dashboard-layout">
+        <!-- 顶部导航栏 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html" class="nav-logo" style="text-decoration: none; color: black;">
+                    <img src="img/logo.svg" alt="预约平台">
+                </a>
+            </div>
+            <div class="nav-right">
+                <a href="service-management.html" class="nav-btn publish-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>发布服务</span>
+                </a>
+                <a href="provider-notifications.html" class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">5</span>
+                </a>
+                <div class="user-menu">
+                    <img src="img/avatar.jpg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">李服务</span>
+
+                </div>
+            </div>
+        </nav>
+
+        <!-- 侧边栏 -->
+        <aside class="dashboard-sidebar">
+            <div class="user-profile">
+                <div class="profile-header">
+                    <div class="profile-avatar-wrapper">
+                        <img src="img/avatar.jpg" alt="用户头像" class="profile-avatar">
+                    </div>
+                    <h3 class="profile-name" id="sidebar-username">李服务</h3>
+                    <p class="profile-role">服务商</p>
+                </div>
+                <div class="booking-stats">
+                    <div class="stat-card waiting" data-status="pending">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">待确认预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card upcoming" data-status="upcoming">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">即将到来</span>
+                        </div>
+                    </div>
+                    <div class="stat-card completed" data-status="completed">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已完成预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card cancelled" data-status="canceled">
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已拒绝预约</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="dashboard-nav">
+                <a href="provider-dashboard.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>预约管理</span>
+                </a>
+                <a href="service-management.html" class="nav-item">
+                    <i class="fas fa-list-alt"></i>
+                    <span>服务管理</span>
+                    
+                </a>
+                <a href="time-slot-management.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>时间段管理</span>
+                </a>
+                <a href="provider-reviews.html" class="nav-item">
+                    <i class="fas fa-star"></i>
+                    <span>客户评价</span>
+                    
+                </a>
+                <a href="provider-settings.html" class="nav-item active">
+                    <i class="fas fa-cog"></i>
+                    <span>账号设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主要内容区 -->
+        <main class="dashboard-main">
+            <div class="page-header">
+                <h1>账号设置</h1>
+            </div>
+
+            <!-- 设置选项卡 -->
+            <div class="settings-tabs">
+                <button class="tab-btn active" data-tab="profile">
+                    <i class="fas fa-user"></i>
+                    个人资料
+                </button>
+                <button class="tab-btn" data-tab="business">
+                    <i class="fas fa-briefcase"></i>
+                    商家信息
+                </button>
+                <button class="tab-btn" data-tab="security">
+                    <i class="fas fa-shield-alt"></i>
+                    密码修改
+                </button>
+                <button class="tab-btn" data-tab="notification">
+                    <i class="fas fa-bell"></i>
+                    消息通知
+                </button>
+                <button class="tab-btn" data-tab="payment">
+                    <i class="fas fa-credit-card"></i>
+                    支付设置
+                </button>
+            </div>
+
+            <!-- 设置内容区 -->
+            <div class="settings-content">
+                <!-- 个人资料 -->
+                <div class="settings-panel active" id="profile">
+                <div class="settings-section">
+                <h2>用户个人信息填写</h2>
+                <div class="card-grid">
+                <!-- 头像、用户名、昵称卡片 -->
+                <div class="card">
+                  <div class="avatar-upload">
+                    <img src="img/avatar-placeholder.jpg" alt="默认头像">
+                    <input type="file" id="avatarFile" accept="image/*">
+                  </div>
+                  <label for="username">用户名</label>
+                  <input type="text" id="username" placeholder="请输入用户名">
+                  <label for="nickname">昵称</label>
+                  <input type="text" id="nickname" placeholder="请输入昵称">
+                </div>
+
+                <!-- 性别、个人简介卡片 -->
+                <div class="card">
+                  <label for="gender">性别</label>
+                  <select id="gender">
+                    <option value="male">男</option>
+                    <option value="female">女</option>
+                    <option value="other">保密</option>
+                  </select>
+                  <label for="bio">个人简介</label>
+                  <textarea id="bio" placeholder="请输入个人简介"></textarea>
+                </div>
+
+                <!-- 联系方式卡片 -->
+                <div class="card">
+                  <h3>联系方式</h3>
+                  <div class="form-item">
+                    <label for="phone">联系电话</label>
+                    <input type="tel" id="phone" placeholder="请输入联系电话">
+                  </div>
+                  <div class="form-item">
+                    <label for="email">邮箱地址</label>
+                    <input type="email" id="email" placeholder="请输入邮箱地址">
+                  </div>
+
+                  <!-- 客服电话卡片（若为固定值也可设为只读，这里演示可编辑） -->
+                  <div class="card">
+                    <label for="servicePhone">客服电话</label>
+                    <input type="tel" id="servicePhone" placeholder="请输入客服电话" value="">
+                  </div>
+                </div>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-cancel">取消</button>
+                <button class="btn btn-save">保存</button>
+              </div>
+                </div>
+                </div>
+
+                <!-- 商家信息 -->
+                <div class="settings-panel" id="business">
+                    <div class="settings-section">
+                        <h2>商家信息填写</h2>
+
+                              <div class="card-grid" id="business-form">
+                                <!-- 基础信息卡片 -->
+                                <div class="card">
+                                  <h3>基础信息</h3>
+                                  <div class="form-item">
+                                    <label for="merchantName">商家名称</label>
+                                    <input type="text" id="merchantName" placeholder="请输入商家名称">
+                                  </div>
+                                  <div class="form-item">
+                                    <label for="licenseNo">营业执照号</label>
+                                    <input type="text" id="licenseNo" placeholder="请输入营业执照号">
+                                  </div>
+                                  <div class="form-item">
+                                    <label for="businessType">经营类别</label>
+                                    <select id="businessType">
+                                      <option value="">请选择经营类别</option>
+                                      <option value="按摩理疗">按摩理疗</option>
+                                      <option value="美容美发">美容美发</option>
+                                      <option value="健康养生">健康养生</option>
+                                      <option value="其他">其他</option>
+                                    </select>
+                                  </div>
+                                </div>
+
+                                <!-- 商家简介卡片 -->
+                                <div class="card">
+                                  <h3>商家简介</h3>
+                                  <div class="form-item">
+                                    <label for="merchantIntro">简介内容</label>
+                                    <textarea id="merchantIntro" rows="4" placeholder="请输入商家简介"></textarea>
+                                  </div>
+                                </div>
+
+                                <!-- 营业地址卡片 -->
+                                <div class="card">
+                                  <h3>营业地址</h3>
+                                  <div class="address-group">
+                                    <div class="form-item" style="flex: 1;">
+                                      <label for="province">省</label>
+                                      <input type="text" id="province" placeholder="请输入省份">
+                                    </div>
+                                    <div class="form-item" style="flex: 1;">
+                                      <label for="city">市</label>
+                                      <input type="text" id="city" placeholder="请输入城市">
+                                    </div>
+                                    <div class="form-item" style="flex: 1;">
+                                      <label for="district">区/县</label>
+                                      <input type="text" id="district" placeholder="请输入区县">
+                                    </div>
+                                  </div>
+                                  <div class="form-item">
+                                    <label for="detailAddress">详细地址</label>
+                                    <input type="text" id="detailAddress" placeholder="请输入详细地址">
+                                  </div>
+                                </div>
+
+                                <!-- 营业时间卡片 -->
+                                <div class="card">
+                                  <h3>营业时间</h3>
+                                  <div class="form-item">
+                                    <label>每日营业</label>
+                                    <div class="time-group">
+                                      <select id="openTime" class="time-select">
+                                        <!-- 选项将由JavaScript动态生成 -->
+                                      </select>
+                                      <span>至</span>
+                                      <select id="closeTime" class="time-select">
+                                        <!-- 选项将由JavaScript动态生成 -->
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <div class="form-item">
+                                    <label for="holidayDesc">节假日说明</label>
+                                    <input type="text" id="holidayDesc" placeholder="如：节假日照常营业">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="btn-group">
+                                <button class="btn btn-cancel">取消</button>
+                                <button class="btn btn-save">保存更改</button>
+                              </div>
+                            </div>
+                        </div>
+
+
+
+
+<div class="settings-panel" id="security">
+        <div class="settings-section">
+            <div class="bg-gray-50 min-h-screen font-inter">
+
+  <!-- 主要内容 -->
+  <div class="py-12">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="p-6 bg-white border-b border-gray-200">
+         <h1 class="section-header text-center">修改密码</h1>
+
+          <div class="form-container p-6 w-full">
+            <!-- 原密码输入 -->
+            <div class="form-group">
+              <label for="currentPassword" class="form-label">原密码</label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="currentPassword"
+                  class="form-input"
+                  placeholder="请输入原密码"
+                >
+                <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                  <i class="fa fa-eye-slash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- 新密码输入 -->
+            <div class="form-group">
+              <label for="newPassword" class="form-label">新密码</label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="newPassword"
+                  class="form-input"
+                  placeholder="请输入新密码"
+                >
+                <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                  <i class="fa fa-eye-slash"></i>
+                </button>
+              </div>
+
+              <!-- 密码强度指示器 -->
+              <div class="mt-1">
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span id="strengthText" class="text-gray-600">密码强度</span>
+                  <span id="strengthScore" class="text-gray-500">弱</span>
+                </div>
+                <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                  <div id="strengthBar" class="h-full password-strength-bar bg-danger w-1/4 rounded-full"></div>
+                </div>
+              </div>
+
+              <!-- 密码提示 -->
+              <div id="passwordTips" class="text-xs text-gray-500 mt-1 space-y-0.5">
+                <div class="flex items-center">
+                  <i id="lengthCheck" class="fa fa-times text-danger mr-1"></i>
+                  <span>至少8个字符</span>
+                </div>
+                <div class="flex items-center">
+                  <i id="upperCheck" class="fa fa-times text-danger mr-1"></i>
+                  <span>包含大写字母</span>
+                </div>
+                <div class="flex items-center">
+                  <i id="numberCheck" class="fa fa-times text-danger mr-1"></i>
+                  <span>包含数字</span>
+                </div>
+                <div class="flex items-center">
+                  <i id="specialCheck" class="fa fa-times text-danger mr-1"></i>
+                  <span>包含特殊字符</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 确认新密码输入 -->
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label">确认新密码</label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  class="form-input"
+                  placeholder="请再次输入新密码"
+                >
+                <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                  <i class="fa fa-eye-slash"></i>
+                </button>
+              </div>
+              <div id="confirmMessage" class="hidden text-xs text-danger mt-1">
+                <i class="fa fa-exclamation-circle mr-1"></i>
+                <span>两次输入的密码不一致</span>
+              </div>
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="pt-2 flex space-x-3">
+              <button id="cancelBtn" class="btn flex-1 bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 btn-hover">
+                取消
+              </button>
+              <button id="saveBtn" class="btn flex-1 bg-primary text-white hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 btn-hover">
+                保存更改
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+            </div>
+        </div>
+</div>
+            </div>
+
+
+
+
+  <!-- 成功提示模态框 -->
+  <div id="successModal" class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300">
+      <div class="text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-success/10 text-success mb-4">
+          <i class="fa fa-check text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">密码修改成功</h3>
+        <p class="text-gray-600 mb-6">您的密码已成功更新，请使用新密码登录。</p>
+        <button id="closeModal" class="btn bg-primary text-white hover:bg-primary/90">
+          确定
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+    <!-- 消息通知 -->
+                <div class="settings-panel" id="notification">
+                    <div class="settings-section">
+                        <h2>通知设置</h2>
+                        <div class="notification-settings">
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h3>预约通知</h3>
+                                    <p>有新的预约请求时通知我</p>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="booking-notify" class="toggle-input" checked>
+                                    <label for="booking-notify" class="toggle-label"></label>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h3>评价通知</h3>
+                                    <p>收到新的客户评价时通知我</p>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="review-notify" class="toggle-input" checked>
+                                    <label for="review-notify" class="toggle-label"></label>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h3>系统通知</h3>
+                                    <p>接收系统更新和活动通知</p>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="system-notify" class="toggle-input" checked>
+                                    <label for="system-notify" class="toggle-label"></label>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h3>营销通知</h3>
+                                    <p>接收促销和营销相关信息</p>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="marketing-notify" class="toggle-input">
+                                    <label for="marketing-notify" class="toggle-label"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+            <button class="btn btn-cancel">取消</button>
+            <button class="btn btn-save">保存</button>
+        </div>
+                    </div>
+                </div>
+
+                <!-- 支付设置 -->
+                <div class="settings-panel" id="payment">
+                    <div class="settings-section">
+                        <h2>收款方式</h2>
+                        <div class="payment-methods">
+                            <div class="payment-item">
+                                <div class="payment-info">
+                                    <h3>银行卡</h3>
+                                    <p>工商银行 (****1234)</p>
+                                </div>
+                                <div class="payment-actions">
+                                    <button class="btn-edit">编辑</button>
+                                    <button class="btn-delete">删除</button>
+                                </div>
+                            </div>
+                            <div class="payment-item">
+                                <div class="payment-info">
+                                    <h3>支付宝</h3>
+                                    <p>已绑定 (139****1234)</p>
+                                </div>
+                                <div class="payment-actions">
+                                    <button class="btn-edit">编辑</button>
+                                    <button class="btn-delete">删除</button>
+                                </div>
+                            </div>
+                            <button class="btn-add-payment">
+                                <i class="fas fa-plus"></i>
+                                添加收款方式
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h2>结算设置</h2>
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label>结算周期</label>
+                                <select id="settlement-cycle">
+                                    <option value="weekly">每周</option>
+                                    <option value="biweekly" selected>每两周</option>
+                                    <option value="monthly">每月</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>最低结算金额</label>
+                                <div class="input-group">
+                                    <span class="input-prefix">¥</span>
+                                    <input type="number" value="100" min="0">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn-cancel">取消</button>
+                        <button class="btn-save">保存更改</button>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+    <script src="js/notification-manager.js"></script>
+    <script src="js/provider-settings.js"></script>
+
+
+    <!-- 支付方式编辑模态框 -->
+    <div class="modal" id="paymentEditModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑收款方式</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentEditForm">
+                    <input type="hidden" id="paymentId">
+                    <input type="hidden" id="paymentType">
+
+                    <div class="form-group payment-type-bank">
+                        <label for="bankName">银行名称</label>
+                        <select id="bankName" required>
+                            <option value="">请选择银行</option>
+                            <option value="icbc">工商银行</option>
+                            <option value="abc">农业银行</option>
+                            <option value="boc">中国银行</option>
+                            <option value="ccb">建设银行</option>
+                            <option value="cmb">招商银行</option>
+                            <option value="psbc">邮储银行</option>
+                            <option value="spdb">浦发银行</option>
+                            <option value="cib">兴业银行</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group payment-type-bank">
+                        <label for="cardNumber">卡号</label>
+                        <input type="text" id="cardNumber" placeholder="请输入银行卡号" required>
+                    </div>
+
+                    <div class="form-group payment-type-bank">
+                        <label for="cardHolder">持卡人姓名</label>
+                        <input type="text" id="cardHolder" placeholder="请输入持卡人姓名" required>
+                    </div>
+
+                    <div class="form-group payment-type-alipay">
+                        <label for="alipayAccount">支付宝账号</label>
+                        <input type="text" id="alipayAccount" placeholder="请输入支付宝账号" required>
+                    </div>
+
+                    <div class="form-group payment-type-alipay">
+                        <label for="alipayName">支付宝实名</label>
+                        <input type="text" id="alipayName" placeholder="请输入支付宝实名" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel cancel-modal">取消</button>
+                        <button type="submit" class="btn-save">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加支付方式模态框 -->
+    <div class="modal" id="paymentAddModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加收款方式</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-type-selector">
+                    <div class="payment-type-option" data-type="bank">
+                        <i class="fas fa-credit-card"></i>
+                        <span>银行卡</span>
+                    </div>
+                    <div class="payment-type-option" data-type="alipay">
+                        <i class="fab fa-alipay"></i>
+                        <span>支付宝</span>
+                    </div>
+                    <div class="payment-type-option" data-type="wechat">
+                        <i class="fab fa-weixin"></i>
+                        <span>微信支付</span>
+                    </div>
+                </div>
+
+                <form id="paymentAddForm" style="display: none;">
+                    <input type="hidden" id="newPaymentType">
+
+                    <!-- 银行卡表单 -->
+                    <div id="bankForm" class="payment-form">
+                        <div class="form-group">
+                            <label for="newBankName">银行名称</label>
+                            <select id="newBankName" required>
+                                <option value="">请选择银行</option>
+                                <option value="icbc">工商银行</option>
+                                <option value="abc">农业银行</option>
+                                <option value="boc">中国银行</option>
+                                <option value="ccb">建设银行</option>
+                                <option value="cmb">招商银行</option>
+                                <option value="psbc">邮储银行</option>
+                                <option value="spdb">浦发银行</option>
+                                <option value="cib">兴业银行</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newCardNumber">卡号</label>
+                            <input type="text" id="newCardNumber" placeholder="请输入银行卡号" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newCardHolder">持卡人姓名</label>
+                            <input type="text" id="newCardHolder" placeholder="请输入持卡人姓名" required>
+                        </div>
+                    </div>
+
+                    <!-- 支付宝表单 -->
+                    <div id="alipayForm" class="payment-form">
+                        <div class="form-group">
+                            <label for="newAlipayAccount">支付宝账号</label>
+                            <input type="text" id="newAlipayAccount" placeholder="请输入支付宝账号" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newAlipayName">支付宝实名</label>
+                            <input type="text" id="newAlipayName" placeholder="请输入支付宝实名" required>
+                        </div>
+                    </div>
+
+                    <!-- 微信支付表单 -->
+                    <div id="wechatForm" class="payment-form">
+                        <div class="form-group">
+                            <label for="newWechatAccount">微信账号</label>
+                            <input type="text" id="newWechatAccount" placeholder="请输入微信账号" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newWechatName">微信实名</label>
+                            <input type="text" id="newWechatName" placeholder="请输入微信实名" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel cancel-modal">取消</button>
+                        <button type="submit" class="btn-save">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 时间段编辑模态框 -->
+    <div class="modal" id="timeSlotModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑时间段</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="timeSlotForm">
+                    <div class="form-group">
+                        <label for="slotDate">日期</label>
+                        <input type="date" id="slotDate" disabled>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="slotStartTime">开始时间</label>
+                            <input type="time" id="slotStartTime">
+                        </div>
+                        <div class="form-group half">
+                            <label for="slotEndTime">结束时间</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+        </main>
+    </div>
+
+    <!-- 确保在页面底部正确引入JS文件 -->
+    <script src="js/sidebar-manager.js"></script>
+    <script src="js/provider-settings.js"></script>
+</html>

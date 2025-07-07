@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务商控制台 - 在线预约平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/provider-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+        .booking-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 一行2个卡片，平均分配宽度 */
+            gap: 16px; /* 卡片之间的间距 */
+            max-width: 1200px; /* 容器最大宽度 */
+            margin: 0 auto; /* 水平居中 */
+        }
+</style>
+<body>
+    <!-- 主体布局 -->
+    <div class="dashboard-layout">
+        <!-- 顶部导航栏 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html" class="nav-logo" style="text-decoration: none; color: black;">
+                    <img src="img/logo.svg" alt="预约平台">
+                </a>
+            </div>
+            <div class="nav-right">
+                <a href="service-management.html" class="nav-btn publish-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>发布服务</span>
+                </a>
+                <a href="provider-notifications.html" class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">5</span>
+                </a>
+                <div class="user-menu">
+                    <img src="img/avatar.jpg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">李服务</span>
+
+                </div>
+            </div>
+        </nav>
+
+        <!-- 侧边栏 -->
+        <aside class="dashboard-sidebar">
+            <div class="user-profile">
+                <div class="profile-header">
+                    <div class="profile-avatar-wrapper">
+                        <img src="img/avatar.jpg" alt="用户头像" class="profile-avatar">
+                    </div>
+                    <h3 class="profile-name">李服务</h3>
+                    <p class="profile-role">服务商</p>
+                </div>
+                <div class="booking-stats">
+                    <div class="stat-card waiting" data-status="pending">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">待确认预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card upcoming" data-status="upcoming">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">即将到来</span>
+                        </div>
+                    </div>
+                    <div class="stat-card completed" data-status="completed">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已完成预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card cancelled" data-status="canceled">
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已拒绝预约</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="dashboard-nav">
+                <a href="provider-dashboard.html" class="nav-item active">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>预约管理</span>
+                </a>
+                <a href="service-management.html" class="nav-item">
+                    <i class="fas fa-list-alt"></i>
+                    <span>服务管理</span>
+                    
+                </a>
+                <a href="time-slot-management.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>时间段管理</span>
+                </a>
+                <a href="provider-reviews.html" class="nav-item">
+                    <i class="fas fa-star"></i>
+                    <span>客户评价</span>
+                    
+                </a>
+                <a href="provider-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>账号设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主要内容区 -->
+        <main class="dashboard-main">
+            <div class="main-header">
+                <h1>预约管理</h1>
+                <div class="view-selector">
+                    <button class="view-btn active" data-view="list">
+                        <i class="fas fa-list"></i> 列表视图
+                    </button>
+                    <button class="view-btn" data-view="calendar">
+                        <i class="fas fa-calendar-alt"></i> 日历视图
+                    </button>
+                </div>
+            </div>
+
+            <!-- 预约内容区域 -->
+            <div class="booking-container">
+                <!-- 预约日历 -->
+                <div class="booking-calendar-section" style="display: none;">
+                    <div class="booking-calendar">
+                        <div class="calendar-header">
+                            <div class="calendar-nav">
+                                <button id="prevMonth" class="nav-button">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span id="currentMonth">2024年6月</span>
+                                <button id="nextMonth" class="nav-button">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-weekdays">
+                            <div class="weekday">一</div>
+                            <div class="weekday">二</div>
+                            <div class="weekday">三</div>
+                            <div class="weekday">四</div>
+                            <div class="weekday">五</div>
+                            <div class="weekday">六</div>
+                            <div class="weekday">日</div>
+                        </div>
+
+                        <div id="calendarGrid" class="calendar-grid">
+                            <!-- 日历格子将由JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 预约列表部分 -->
+                <div class="booking-list-section">
+                    <div class="section-header">
+                        <h2>预约请求</h2>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-status="all">全部</button>
+                            <button class="filter-btn" data-status="pending">待确认</button>
+                            <button class="filter-btn" data-status="upcoming">即将到来</button>
+                            <button class="filter-btn" data-status="completed">已完成</button>
+                            <button class="filter-btn" data-status="rejected">已拒绝</button>
+                        </div>
+                    </div>
+                    <div class="booking-list" id="bookingList">
+                        <!-- 待确认预约 -->
+                        <div class="booking-item pending card">
+                            <div class="card-header">
+                                <div class="booking-time">
+                                    <div class="date"><i class="fas fa-calendar-day"></i> 6月17日</div>
+                                    <div class="time"><i class="fas fa-clock"></i> 10:00-11:00</div>
+                                </div>
+                                <div class="status-badge pending">待确认</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="booking-info">
+                                    <div class="customer-info">
+                                        <img src="img/customer1.jpg" alt="客户头像" class="customer-avatar">
+                                        <div>
+                                            <div class="customer-name">王小明</div>
+                                            <div class="customer-contact"><i class="fas fa-phone-alt"></i> 138****5678</div>
+                                        </div>
+                                    </div>
+                                    <div class="service-info">
+                                        <div class="service-name">全身按摩护理</div>
+                                        <div class="service-price">¥288.00 / 60分钟</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="booking-actions">
+                                    <button class="btn-accept" data-id="1"><i class="fas fa-check"></i> 确认</button>
+                                    <button class="btn-reject" data-id="1"><i class="fas fa-times"></i> 拒绝</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 待确认预约 -->
+                        <div class="booking-item pending card">
+                            <div class="card-header">
+                                <div class="booking-time">
+                                    <div class="date"><i class="fas fa-calendar-day"></i> 6月17日</div>
+                                    <div class="time"><i class="fas fa-clock"></i> 14:30-15:30</div>
+                                </div>
+                                <div class="status-badge pending">待确认</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="booking-info">
+                                    <div class="customer-info">
+                                        <img src="img/customer2.jpg" alt="客户头像" class="customer-avatar">
+                                        <div>
+                                            <div class="customer-name">李小红</div>
+                                            <div class="customer-contact"><i class="fas fa-phone-alt"></i> 139****1234</div>
+                                        </div>
+                                    </div>
+                                    <div class="service-info">
+                                        <div class="service-name">深层肌肤护理</div>
+                                        <div class="service-price">¥358.00 / 90分钟</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="booking-actions">
+                                    <button class="btn-accept" data-id="2"><i class="fas fa-check"></i> 确认</button>
+                                    <button class="btn-reject" data-id="2"><i class="fas fa-times"></i> 拒绝</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 已确认预约 -->
+                        <div class="booking-item upcoming card">
+                            <div class="card-header">
+                                <div class="booking-time">
+                                    <div class="date"><i class="fas fa-calendar-day"></i> 6月18日</div>
+                                    <div class="time"><i class="fas fa-clock"></i> 09:30-10:30</div>
+                                </div>
+                                <div class="status-badge upcoming">即将到来</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="booking-info">
+                                    <div class="customer-info">
+                                        <img src="img/customer3.jpg" alt="客户头像" class="customer-avatar">
+                                        <div>
+                                            <div class="customer-name">张小伟</div>
+                                            <div class="customer-contact"><i class="fas fa-phone-alt"></i> 137****9876</div>
+                                        </div>
+                                    </div>
+                                    <div class="service-info">
+                                        <div class="service-name">颈椎调理按摩</div>
+                                        <div class="service-price">¥198.00 / 45分钟</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="booking-actions">
+                                    <button class="btn-detail" data-id="3"><i class="fas fa-eye"></i> 详情</button>
+                                    <button class="btn-reschedule" data-id="3"><i class="fas fa-calendar-alt"></i> 调整</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 已完成预约 -->
+                        <div class="booking-item completed card">
+                            <div class="card-header">
+                                <div class="booking-time">
+                                    <div class="date"><i class="fas fa-calendar-day"></i> 6月15日</div>
+                                    <div class="time"><i class="fas fa-clock"></i> 16:00-17:00</div>
+                                </div>
+                                <div class="status-badge completed">已完成</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="booking-info">
+                                    <div class="customer-info">
+                                        <img src="img/customer4.jpg" alt="客户头像" class="customer-avatar">
+                                        <div>
+                                            <div class="customer-name">陈小静</div>
+                                            <div class="customer-contact"><i class="fas fa-phone-alt"></i> 136****3456</div>
+                                        </div>
+                                    </div>
+                                    <div class="service-info">
+                                        <div class="service-name">足部按摩</div>
+                                        <div class="service-price">¥168.00 / 60分钟</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="booking-actions">
+                                    <button class="btn-detail" data-id="4"><i class="fas fa-eye"></i> 详情</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 预约详情模态框 -->
+    <div class="modal" id="appointmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>预约详情</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- 动态插入预约详情 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 拒绝原因模态框 -->
+    <div class="modal" id="rejectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>拒绝预约</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="rejectForm">
+                    <div class="form-group">
+                        <label for="rejectReason">拒绝原因</label>
+                        <select id="rejectReason" required>
+                            <option value="">请选择拒绝原因</option>
+                            <option value="time_conflict">时间冲突</option>
+                            <option value="unavailable">服务不可用</option>
+                            <option value="staff_unavailable">服务人员不可用</option>
+                            <option value="other">其他原因</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rejectMessage">详细说明</label>
+                        <textarea id="rejectMessage" rows="4" placeholder="请输入详细说明..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel cancel-reject">取消</button>
+                        <button type="submit" class="btn-confirm">确认拒绝</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 调整预约时间模态框 -->
+    <div class="modal" id="rescheduleModal">
+        <div class="modal-content service-modal">
+            <form id="rescheduleForm">
+                <div class="modal-header">
+                    <h3>调整预约时间</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="rescheduleDate">新日期：</label>
+                        <input type="date" id="rescheduleDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rescheduleTime">新时间：</label>
+                        <select id="rescheduleTime" required></select>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display:flex;gap:1rem;justify-content:flex-end;">
+                    <button type="submit" class="btn-confirm">确定</button>
+                    <button type="button" class="btn-cancel" id="rescheduleClose">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar-manager.js"></script>
+    <script src="js/provider-dashboard.js"></script>
+    <script>
+        // 在文档加载完成后初始化控制台
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('初始化服务商控制台...');
+            // 创建全局实例，方便测试脚本访问
+            window.providerDashboard = new ProviderDashboard();
+            console.log('服务商控制台初始化完成');
+        });
+    </script>
+    <script src="js/test-provider-dashboard.js"></script>
+</body>
+</html>

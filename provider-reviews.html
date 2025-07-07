@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户评价 - 在线预约平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/provider-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 客户评价页面特定样式 */
+        .reviews-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stats-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .stats-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .overall-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rating-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4a6cf7;
+        }
+        
+        .rating-stars {
+            color: #ffb74d;
+            font-size: 18px;
+        }
+        
+        .rating-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .rating-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .star-label {
+            width: 40px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .bar-wrapper {
+            flex: 1;
+            height: 8px;
+            background: #f1f1f1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: #4a6cf7;
+            border-radius: 4px;
+        }
+        
+        .count {
+            width: 30px;
+            font-size: 14px;
+            color: #666;
+            text-align: right;
+        }
+        
+        .service-stats {
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        
+        .service-stats h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .service-rating-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .service-rating-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .service-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .service-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .service-rating .rating {
+            color: #ffb74d;
+        }
+        
+        .service-rating .count {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .review-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .customer-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .customer-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .review-date {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #ffb74d;
+        }
+        
+        .review-service {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .review-content {
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .review-reply {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .reply-title {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .reply-date {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .reply-content {
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .review-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn-reply {
+            background: #4a6cf7;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-reply:hover {
+            background: #3557e0;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            background: #f1f1f1;
+            color: #666;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: #4a6cf7;
+            color: #fff;
+        }
+        
+        .no-reply {
+            color: #ff6b6b;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .reply-modal textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .reply-modal textarea:focus {
+            border-color: #4a6cf7;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 主体布局 -->
+    <div class="dashboard-layout">
+        <!-- 顶部导航栏 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html" class="nav-logo" style="text-decoration: none; color: black;">
+                    <img src="img/logo.svg" alt="预约平台">
+                </a>
+            </div>
+            <div class="nav-right">
+                <a href="service-management.html" class="nav-btn publish-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>发布服务</span>
+                </a>
+                <a href="provider-notifications.html" class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">5</span>
+                </a>
+                <div class="user-menu">
+                    <img src="img/avatar.jpg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">李服务</span>
+
+                </div>
+            </div>
+        </nav>
+
+        <!-- 侧边栏 -->
+        <aside class="dashboard-sidebar">
+            <div class="user-profile">
+                <div class="profile-header">
+                    <div class="profile-avatar-wrapper">
+                        <img src="img/avatar.jpg" alt="用户头像" class="profile-avatar">
+                    </div>
+                    <h3 class="profile-name">李服务</h3>
+                    <p class="profile-role">服务商</p>
+                </div>
+                <div class="booking-stats">
+                    <div class="stat-card waiting" data-status="pending">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">待确认预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card upcoming" data-status="upcoming">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">即将到来</span>
+                        </div>
+                    </div>
+                    <div class="stat-card completed" data-status="completed">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已完成预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card cancelled" data-status="canceled">
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已拒绝预约</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="dashboard-nav">
+                <a href="provider-dashboard.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>预约管理</span>
+                </a>
+                <a href="service-management.html" class="nav-item">
+                    <i class="fas fa-list-alt"></i>
+                    <span>服务管理</span>
+                    
+                </a>
+                <a href="time-slot-management.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>时间段管理</span>
+                </a>
+                <a href="provider-reviews.html" class="nav-item active">
+                    <i class="fas fa-star"></i>
+                    <span>客户评价</span>
+                    
+                </a>
+                <a href="provider-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>账号设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主要内容区 -->
+        <main class="dashboard-main">
+            <div class="main-header">
+                <h1>客户评价</h1>
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">全部评价</button>
+                    <button class="filter-btn" data-filter="unreplied">待回复</button>
+                    <button class="filter-btn" data-filter="replied">已回复</button>
+
+                </div>
+            </div>
+
+            <!-- 评价统计 -->
+            <div class="reviews-stats">
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <h3>总体评分</h3>
+                        <div class="overall-rating">
+                            <span class="rating-value">4.8</span>
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rating-bars">
+                        <div class="rating-bar">
+                            <span class="star-label">5星</span>
+                            <div class="bar-wrapper">
+                                <div class="bar-fill" style="width: 75%"></div>
+                            </div>
+                            <span class="count">18</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="star-label">4星</span>
+                            <div class="bar-wrapper">
+                                <div class="bar-fill" style="width: 20%"></div>
+                            </div>
+                            <span class="count">5</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="star-label">3星</span>
+                            <div class="bar-wrapper">
+                                <div class="bar-fill" style="width: 5%"></div>
+                            </div>
+                            <span class="count">1</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="star-label">2星</span>
+                            <div class="bar-wrapper">
+                                <div class="bar-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="count">0</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="star-label">1星</span>
+                            <div class="bar-wrapper">
+                                <div class="bar-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="count">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-card service-stats">
+                    <h3>服务评分</h3>
+                    <div class="service-rating-list">
+                        <!-- 服务评分将由 JS 动态生成 -->
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <!-- 评价列表 -->
+            <div class="reviews-list">
+                <!-- 未回复评价 -->
+                <div class="review-card unreplied" data-type="unreplied positive">
+                    <div class="review-header">
+                        <div class="customer-info">
+                            <img src="img/customer1.jpg" alt="客户头像" class="customer-avatar">
+                            <div>
+                                <div class="customer-name">王小明</div>
+                                <div class="review-date">2025年6月15日</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>5.0</span>
+                        </div>
+                    </div>
+                    <div class="review-service">预约服务：全身按摩护理</div>
+                    <div class="review-content">
+                        服务非常专业，按摩手法很到位，全程感觉很舒适。环境也很干净整洁，服务人员态度很好。下次还会再来！
+                    </div>
+                    <div class="review-actions">
+                        <span class="no-reply"><i class="fas fa-exclamation-circle"></i> 待回复</span>
+                        <button class="btn-reply" data-id="1">回复评价</button>
+                    </div>
+                </div>
+
+                <!-- 已回复评价 -->
+                <div class="review-card replied" data-type="replied positive">
+                    <div class="review-header">
+                        <div class="customer-info">
+                            <img src="img/customer2.jpg" alt="客户头像" class="customer-avatar">
+                            <div>
+                                <div class="customer-name">李小红</div>
+                                <div class="review-date">2025年6月10日</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>4.5</span>
+                        </div>
+                    </div>
+                    <div class="review-service">预约服务：足部按摩</div>
+                    <div class="review-content">
+                        按摩师技术很棒，腿部的酸痛感明显减轻了。服务态度也很好，环境舒适。只是预约系统偶尔有点卡顿，希望能改进。
+                    </div>
+                    <div class="review-reply">
+                        <div class="reply-header">
+                            <span class="reply-title">商家回复：</span>
+                            <span class="reply-date">2025年6月10日</span>
+                        </div>
+                        <div class="reply-content">
+                            李小红您好，非常感谢您的评价和建议！我们很高兴您对我们的按摩服务感到满意。关于预约系统的问题，我们已经注意到并正在进行技术升级，希望下次您使用时会有更好的体验。期待您的再次光临！
+                        </div>
+                    </div>
+                    <div class="review-actions">
+                        <button class="btn-reply" data-id="2">修改回复</button>
+                    </div>
+                </div>
+
+                <!-- 差评 -->
+                <div class="review-card unreplied" data-type="unreplied negative">
+                    <div class="review-header">
+                        <div class="customer-info">
+                            <img src="img/customer3.jpg" alt="客户头像" class="customer-avatar">
+                            <div>
+                                <div class="customer-name">张小伟</div>
+                                <div class="review-date">2025年6月8日</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>3.0</span>
+                        </div>
+                    </div>
+                    <div class="review-service">预约服务：深层肌肤护理</div>
+                    <div class="review-content">
+                        服务体验一般，感觉效果没有宣传的那么好。等待时间有点长，希望能改进预约流程，提高效率。
+                    </div>
+                    <div class="review-actions">
+                        <span class="no-reply"><i class="fas fa-exclamation-circle"></i> 待回复</span>
+                        <button class="btn-reply" data-id="3">回复评价</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 回复评价模态框 -->
+    <div class="modal" id="replyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>回复客户评价</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body reply-modal">
+                <form id="replyForm">
+                    <div class="form-group">
+                        <label for="replyContent">回复内容</label>
+                        <textarea id="replyContent" placeholder="请输入您的回复内容..." required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel">取消</button>
+                        <button type="submit" class="btn-submit">提交回复</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/sidebar-manager.js"></script>
+    <script src="js/notification-manager.js"></script>
+    <script src="js/provider-reviews.js"></script>
+</body>
+</html> 
